@@ -20,7 +20,7 @@ from tg_bots.close_work_day.chat_mute_control import chat_mute_control
 async def close_chat_bot():
     asyncio.create_task(chat_mute_control())
     
-    # from tg_bots.close_work_day.get_group_id import get_group_id
+# from tg_bots.close_work_day.get_group_id import get_group_id
 # @app.on_event("startup")
 # async def start_get_group_id():
 #     asyncio.create_task(get_group_id())
