@@ -2,6 +2,8 @@ from telegram import Bot
 from telegram.error import TelegramError
 from globals import GlobalConfig
 
+# Получение id группы, в которой находится бот
+
 TELEGRAM_TOKEN = GlobalConfig.tg_bot_token
 
 async def get_group_id():

@@ -33,6 +33,7 @@ async def incoming_messages():
                     # Логи
                     print(f"{user_name} написал - '{user_message}'")
 
+                    # Ключевые слова
                     message_text = user_message.lower()
                     for keyword, response in key_responses.items():
                         if keyword in message_text:

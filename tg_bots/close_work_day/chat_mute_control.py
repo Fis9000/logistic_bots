@@ -5,6 +5,8 @@ from aiogram.types import ChatPermissions
 from tg_bots.close_work_day.send_message import send_message_to_group
 from globals import GlobalConfig
 
+# Вкл/Выкл возможности отправки сообщений пользователями (в отдельнеом потоке)
+
 TELEGRAM_TOKEN = GlobalConfig.tg_bot_token
 GROUP_ID = GlobalConfig.tg_bot_group_id
 
