@@ -7,17 +7,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-
-from tg_bots.close_work_day.start import start_bot
+from tg_bots.close_work_day.start import close_work_day_start_bot
 @app.on_event("startup")
-async def start_telegram_bot():
-    # Запускаем Telegram-клиента в фоновом режиме
-    asyncio.create_task(start_bot())
-    print("Telegram bot is running...")
+async def start_close_work_day_bot():
+    asyncio.create_task(close_work_day_start_bot())
+    print("Telegram bot | close_work_day | is running...")
 
 from tg_bots.close_work_day.chat_mute_control import chat_mute_control
 @app.on_event("startup")
-async def close_chat_bot():
+async def start_chat_mute_control():
     asyncio.create_task(chat_mute_control())
     
 # from tg_bots.close_work_day.get_group_id import get_group_id
@@ -25,7 +23,9 @@ async def close_chat_bot():
 # async def start_get_group_id():
 #     asyncio.create_task(get_group_id())
 
-# WIEV
+
+
+#
 @app.get("/")
 def read_root():
     return "ok"

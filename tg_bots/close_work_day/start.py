@@ -46,5 +46,5 @@ async def incoming_messages():
         except TelegramError as e:
             print(f"Ошибка при получении обновлений: {e}")
 
-async def start_bot():
+async def close_work_day_start_bot():
     await incoming_messages()
