@@ -23,7 +23,10 @@ async def start_chat_mute_control():
 # async def start_get_group_id():
 #     asyncio.create_task(get_group_id())
 
-
+from tg_bots.pay_bot.start import pay_bot_start_bot
+@app.on_event("startup")
+async def start_pay_bot_start_bot():
+    asyncio.create_task(pay_bot_start_bot())
 
 #
 @app.get("/")
