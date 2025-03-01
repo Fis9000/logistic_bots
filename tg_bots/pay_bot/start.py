@@ -1,6 +1,6 @@
 import emoji
 from aiogram import Bot, Dispatcher, types
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 from globals import GlobalConfig
 
 # Токен бота
@@ -13,6 +13,17 @@ dp = Dispatcher()
 # Регистрируем бота в диспетчере
 dp["bot"] = bot
 
+# Reply-клавиатура
+reply_keyboard = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text=emoji.emojize("💳 Оплатить")),
+            KeyboardButton(text=emoji.emojize("⏳ Баланс"))
+        ]
+    ],
+    resize_keyboard=True
+)
+
 # Обработчик команды /start
 @dp.message()
 async def start_command(message: types.Message):
@@ -22,15 +33,40 @@ async def start_command(message: types.Message):
             "Для получения возможности писать в [👷‍♂️АТЛАНТ СПБ👷‍♂️ ХАЛТУРА СПБ | ПОДРАБОТКА СПБ | ШАБАШКА СПБ | РАБОТА САНКТ-ПЕТЕРБУРГ | РАБОТА ПИТЕР](https://t.me/+ohMa5RfNTOkyZDcy?disable_preview=true), "
             "оплатите тариф с нужным количеством сообщений.",
             parse_mode="Markdown",
-            disable_web_page_preview=True
+            disable_web_page_preview=True,
+            reply_markup=reply_keyboard
         )
-        # Кнопки тарифов
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        # # Кнопки тарифов
+        tariff_keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="15 публикаций", callback_data="tariff_15")],
             [InlineKeyboardButton(text="50 публикаций", callback_data="tariff_50")],
             [InlineKeyboardButton(text="100 публикаций", callback_data="tariff_100")]
         ])
-        await message.answer("Доступные тарифы:", reply_markup=keyboard)
+        await message.answer("Доступные тарифы:", reply_markup=tariff_keyboard)
+
+    if message.text == "💳 Оплатить":
+        # Кнопки тарифов
+        tariff_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="15 публикаций", callback_data="tariff_15")],
+            [InlineKeyboardButton(text="50 публикаций", callback_data="tariff_50")],
+            [InlineKeyboardButton(text="100 публикаций", callback_data="tariff_100")]
+        ])
+        await message.answer("Доступные тарифы:", reply_markup=tariff_keyboard)
+
+    if message.text == "⏳ Баланс":
+        tariff_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="✅ Оплатить тариф", callback_data="oplatit_tarif")],
+        ])
+        await message.answer(
+            "😬 Вы не можете отправлять сообщения в группе "
+            "[👷‍♂️АТЛАНТ СПБ👷‍♂️ ХАЛТУРА СПБ | ПОДРАБОТКА СПБ | ШАБАШКА СПБ | "
+            "РАБОТА САНКТ-ПЕТЕРБУРГ | РАБОТА ПИТЕР](https://t.me/+ohMa5RfNTOkyZDcy?disable_preview=true), "
+            "т.к. у вас нет оплаченного тарифа.\n\n"
+            "**⬇️ Оплатите подходящий тариф.**",
+            parse_mode="Markdown",
+            disable_web_page_preview=True,
+            reply_markup=tariff_keyboard
+        )
 
 @dp.callback_query()
 async def tariff_callback(callback_query: types.CallbackQuery):
@@ -156,6 +192,21 @@ async def tariff_callback(callback_query: types.CallbackQuery):
         await i_paid("cancel_100")
     ###
 
+    ### Кнопка "Оплатить тариф"
+    if callback_query.data == "oplatit_tarif":
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="15 публикаций", callback_data="tariff_15")],
+            [InlineKeyboardButton(text="50 публикаций", callback_data="tariff_50")],
+            [InlineKeyboardButton(text="100 публикаций", callback_data="tariff_100")]
+        ])
+        await bot.edit_message_text(
+            chat_id=chat_id,
+            message_id=message_id,
+            text=f"Доступные тарифы",
+            reply_markup=keyboard,
+            parse_mode="Markdown"
+        )
+        
 # Запуск бота через start_polling()
 async def incoming_messages():
     await dp.start_polling(bot)
