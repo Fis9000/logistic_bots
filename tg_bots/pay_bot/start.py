@@ -199,7 +199,7 @@ async def tariff_callback(callback_query: types.CallbackQuery):
         await bot.edit_message_text(
             chat_id=chat_id,
             message_id=message_id,
-            text=f"Доступные тарифы",
+            text=f"Доступные тарифы:",
             reply_markup=keyboard,
             parse_mode="Markdown"
         )
