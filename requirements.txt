@@ -6,3 +6,4 @@ fastapi-cors==0.0.6
 aiogram==3.18.0
 emoji==2.14.1
 telegram
+bot
