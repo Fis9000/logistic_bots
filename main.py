@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+print("START")
+
 from tg_bots.close_work_day.start import close_work_day_start_bot
 @app.on_event("startup")
 async def start_close_work_day_bot():
