@@ -27,6 +27,15 @@ reply_keyboard = ReplyKeyboardMarkup(
 # Обработчик команды /start
 @dp.message()
 async def start_command(message: types.Message):
+    async def tariff_menu():
+        # # Кнопки тарифов
+        tariff_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="15 публикаций", callback_data="tariff_15")],
+            [InlineKeyboardButton(text="50 публикаций", callback_data="tariff_50")],
+            [InlineKeyboardButton(text="100 публикаций", callback_data="tariff_100")]
+        ])
+        await message.answer("Доступные тарифы:", reply_markup=tariff_keyboard)
+
     if message.text == "/start":
         await message.answer(
             "Приветствуем в Атлант Санкт-Петербург!\n\n"
@@ -36,22 +45,10 @@ async def start_command(message: types.Message):
             disable_web_page_preview=True,
             reply_markup=reply_keyboard
         )
-        # # Кнопки тарифов
-        tariff_keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="15 публикаций", callback_data="tariff_15")],
-            [InlineKeyboardButton(text="50 публикаций", callback_data="tariff_50")],
-            [InlineKeyboardButton(text="100 публикаций", callback_data="tariff_100")]
-        ])
-        await message.answer("Доступные тарифы:", reply_markup=tariff_keyboard)
+        await tariff_menu()
 
     if message.text == "💳 Оплатить":
-        # Кнопки тарифов
-        tariff_keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="15 публикаций", callback_data="tariff_15")],
-            [InlineKeyboardButton(text="50 публикаций", callback_data="tariff_50")],
-            [InlineKeyboardButton(text="100 публикаций", callback_data="tariff_100")]
-        ])
-        await message.answer("Доступные тарифы:", reply_markup=tariff_keyboard)
+        await tariff_menu()
 
     if message.text == "⏳ Баланс":
         tariff_keyboard = InlineKeyboardMarkup(inline_keyboard=[
