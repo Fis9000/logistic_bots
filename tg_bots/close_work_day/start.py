@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta, timezone
-import pytz
 from telegram import Bot, Update
 from telegram.error import TelegramError
 import time
