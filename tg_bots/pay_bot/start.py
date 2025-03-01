@@ -32,54 +32,35 @@ async def start_command(message: types.Message):
         ])
         await message.answer("Доступные тарифы:", reply_markup=keyboard)
 
-# Обработчик кнопок тарифов
 @dp.callback_query()
 async def tariff_callback(callback_query: types.CallbackQuery):
     chat_id = callback_query.message.chat.id
     message_id = callback_query.message.message_id
 
+    ### Меню выбора тарифа
+    async def tarif_menu(_pay_btn, _tarif_count, _summ_old, _summ_new):
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=emoji.emojize("💳 Оплатить"), callback_data=_pay_btn)],
+            [InlineKeyboardButton(text=emoji.emojize("⬅️ Назад"), callback_data="back")]
+        ])
+        await bot.edit_message_text(
+            chat_id=chat_id,
+            message_id=message_id,
+            text="Тариф: " + _tarif_count + " публикаций\nСтоимость: <s>" + _summ_old + "</s> " + _summ_new + " 🇷🇺RUB\nКол-во доступных сообщений: " + _tarif_count + " шт",
+            reply_markup=keyboard,
+            parse_mode="HTML"
+        )
     # Тариф 15
     if callback_query.data == "tariff_15":
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[  # Создаем клавиатуру
-            [InlineKeyboardButton(text=emoji.emojize("💳 Оплатить"), callback_data="pay_15")],
-            [InlineKeyboardButton(text=emoji.emojize("⬅️ Назад"), callback_data="back")]
-        ])
-        await bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=message_id,
-            text="Тариф: 15 публикаций\nСтоимость: <s>300.00</s> 250.00 🇷🇺RUB\nКол-во доступных сообщений: 15 шт",
-            reply_markup=keyboard,
-            parse_mode="HTML"
-        )
-    
+        await tarif_menu("pay_15", "15","300.00", "250.00")
     # Тариф 50
     if callback_query.data == "tariff_50":
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=emoji.emojize("💳 Оплатить"), callback_data="pay_50")],
-            [InlineKeyboardButton(text=emoji.emojize("⬅️ Назад"), callback_data="back")]
-        ])
-        await bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=message_id,
-            text="Тариф: 50 публикаций\nСтоимость: <s>900.00</s> 590.00 🇷🇺RUB\nКол-во доступных сообщений: 50 шт",
-            reply_markup=keyboard,
-            parse_mode="HTML"
-        )
-
+        await tarif_menu("pay_50", "50","900.00", "590.00")
     # Тариф 100
     if callback_query.data == "tariff_100":
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=emoji.emojize("💳 Оплатить"), callback_data="pay_100")],
-            [InlineKeyboardButton(text=emoji.emojize("⬅️ Назад"), callback_data="back")]
-        ])
-        await bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=message_id,
-            text="Тариф: 100 публикаций\nСтоимость: <s>1700.00</s> 1050.00 🇷🇺RUB\nКол-во доступных сообщений: 100 шт",
-            reply_markup=keyboard,
-            parse_mode="HTML"
-        )
-
+        await tarif_menu("pay_100", "100", "1700.00", "1050.00")
+    ###
+    
     # Кнопка "Назад"
     if callback_query.data == "back":
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
@@ -90,136 +71,90 @@ async def tariff_callback(callback_query: types.CallbackQuery):
         await bot.edit_message_text(
             chat_id=chat_id,
             message_id=message_id,
-            text="Доступные тарифы:",  # Сюда возвращаем текст "Доступные тарифы:"
+            text="Доступные тарифы:",
             reply_markup=keyboard
         )
 
-    # Обработчик для оплаты тарифов
+    ### Меню оплаты тарифов до нажатия оплатить
+    async def pay_menu_before(_ukassa_btn):
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=emoji.emojize("💰 Юкасса"), callback_data=_ukassa_btn)],
+            [InlineKeyboardButton(text=emoji.emojize("⬅️ Назад"), callback_data="back")]
+        ])
+        await bot.edit_message_reply_markup(chat_id=chat_id, message_id=message_id, reply_markup=keyboard)
+    # Оплатить 15
     if callback_query.data == "pay_15":
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=emoji.emojize("💰 Юкасса"), callback_data="ukassa_15")],
-            [InlineKeyboardButton(text=emoji.emojize("⬅️ Назад"), callback_data="back")]
-        ])
-        await bot.edit_message_reply_markup(chat_id=chat_id, message_id=message_id, reply_markup=keyboard)
-
+        await pay_menu_before("ukassa_15")
+    # Оплатить 50
     if callback_query.data == "pay_50":
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=emoji.emojize("💰 Юкасса"), callback_data="ukassa_50")],
-            [InlineKeyboardButton(text=emoji.emojize("⬅️ Назад"), callback_data="back")]
-        ])
-        await bot.edit_message_reply_markup(chat_id=chat_id, message_id=message_id, reply_markup=keyboard)
-
+        await pay_menu_before("ukassa_50")
+    # Оплатить 100
     if callback_query.data == "pay_100":
+        await pay_menu_before("ukassa_100")
+    ###
+
+    ### Меню оплаты тарифов после нажатия оплатить   
+    async def pay_menu_after(_i_paid_btn, _cancel_btn, _summ):
+        user_id = callback_query.from_user.id
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=emoji.emojize("💰 Юкасса"), callback_data="ukassa_100")],
-            [InlineKeyboardButton(text=emoji.emojize("⬅️ Назад"), callback_data="back")]
+            [InlineKeyboardButton(text=emoji.emojize("⌛ Я ОПЛАТИЛ"), callback_data=_i_paid_btn)],
+            [InlineKeyboardButton(text=emoji.emojize("🚫 ОТМЕНА"), callback_data=_cancel_btn)]
         ])
-        await bot.edit_message_reply_markup(chat_id=chat_id, message_id=message_id, reply_markup=keyboard)
-        
-    # Переход к оплате 15
-    if callback_query.data == "ukassa_15":
-        user_id = callback_query.from_user.id  # Получаем реальный ID пользователя
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=emoji.emojize("⌛ Я ОПЛАТИЛ"), callback_data="i_paid_15")],
-            [InlineKeyboardButton(text=emoji.emojize("🚫 ОТМЕНА"), callback_data="cancel_15")]
-        ])
-        # Обновляем сообщение с реквизитами для оплаты
         await bot.edit_message_text(
             chat_id=chat_id,
             message_id=message_id,
-            text=f"Способ оплаты: Сбербанк\nК оплате: 250.00 🇷🇺RUB\nВаш ID: `{user_id}`\nРеквизиты для оплаты:\n\n2202 2063 1864 9626\n__________________________\n_Вы платите физическому лицу._\n_Деньги поступят на счёт получателя._",
+            text=f"Способ оплаты: Сбербанк\nК оплате: " + _summ + " 🇷🇺RUB\nВаш ID: `" + str(user_id) + "`\nРеквизиты для оплаты:\n\n2202 2063 1864 9626\n__________________________\n_Вы платите физическому лицу._\n_Деньги поступят на счёт получателя._",
             reply_markup=keyboard,
             parse_mode="Markdown"  # Используем Markdown для форматирования
         )
-
-        # Всплывающее сообщение (alert) для пользователя
+        # Всплывающее сообщение (alert)
         await bot.answer_callback_query(
-            callback_query.id,  # Используем ID callback запроса для отправки ответа
-            text="✅ После оплаты нажмите кнопку 'Я ОПЛАТИЛ' и следуйте указаниям.",  # Текст уведомления
-            show_alert=True  # Показывает уведомление как алерт
+            callback_query.id,
+            text="✅ После оплаты нажмите кнопку 'Я ОПЛАТИЛ' и следуйте указаниям.",
+            show_alert=True
         )
+    # Переход к оплате 15
+    if callback_query.data == "ukassa_15":
+        await pay_menu_after("i_paid_15", "cancel_15", "250.00")
+    # Отмена оплаты 15    
     if callback_query.data == "cancel_15":
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=emoji.emojize("💳 Оплатить"), callback_data="pay_15")],
-            [InlineKeyboardButton(text=emoji.emojize("⬅️ Назад"), callback_data="back")]
-        ])
-        # Обновляем текст и клавиатуру без отправки нового сообщения
-        await bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=message_id,
-            text="Тариф: 15 публикаций\nСтоимость: <s>300.00</s> 250.00 🇷🇺RUB\nКол-во доступных сообщений: 15 шт",
-            reply_markup=keyboard,
-            parse_mode="HTML"
-        )
+        await tarif_menu("pay_15", "15","300.00", "250.00") # Возвращаемся в меню выбота тарифа
 
     # Переход к оплате 50
     if callback_query.data == "ukassa_50":
-        user_id = callback_query.from_user.id  # Получаем реальный ID пользователя
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=emoji.emojize("⌛ Я ОПЛАТИЛ"), callback_data="i_paid_50")],
-            [InlineKeyboardButton(text=emoji.emojize("🚫 ОТМЕНА"), callback_data="cancel_50")]
-        ])
-        await bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=message_id,
-            text=f"Способ оплаты: Сбербанк\nК оплате: 590.00 🇷🇺RUB\nВаш ID: `{user_id}`\nРеквизиты для оплаты:\n\n2202 2063 1864 9626\n__________________________\n_Вы платите физическому лицу._\n_Деньги поступят на счёт получателя._",
-            reply_markup=keyboard,
-            parse_mode="Markdown"  # Указываем, что используем Markdown для форматирования
-        )
-        # Всплывающее сообщение (alert) для пользователя
-        await bot.answer_callback_query(
-            callback_query.id,  # Используем ID callback запроса для отправки ответа
-            text="✅ После оплаты нажмите кнопку 'Я ОПЛАТИЛ' и следуйте указаниям.",  # Текст уведомления
-            show_alert=True  # Показывает уведомление как алерт
-        )
+        await pay_menu_after("i_paid_50", "cancel_50", "590.00")
+    # Отмена оплаты 50    
     if callback_query.data == "cancel_50":
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=emoji.emojize("💳 Оплатить"), callback_data="pay_50")],
-            [InlineKeyboardButton(text=emoji.emojize("⬅️ Назад"), callback_data="back")]
-        ])
-        # Обновляем текст и клавиатуру без отправки нового сообщения
-        await bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=message_id,
-            text="Тариф: 50 публикаций\nСтоимость: <s>900.00</s> 590.00 🇷🇺RUB\nКол-во доступных сообщений: 50 шт",
-            reply_markup=keyboard,
-            parse_mode="HTML"
-        )
+        await tarif_menu("pay_50", "50","900.00", "590.00") # Возвращаемся в меню выбота тарифа
 
     # Переход к оплате 100
     if callback_query.data == "ukassa_100":
-        user_id = callback_query.from_user.id  # Получаем реальный ID пользователя
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=emoji.emojize("⌛ Я ОПЛАТИЛ"), callback_data="i_paid_100")],
-            [InlineKeyboardButton(text=emoji.emojize("🚫 ОТМЕНА"), callback_data="cancel_100")]
-        ])
-        await bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=message_id,
-            text=f"Способ оплаты: Сбербанк\nК оплате: 1050.00 🇷🇺RUB\nВаш ID: `{user_id}`\nРеквизиты для оплаты:\n\n2202 2063 1864 9626\n__________________________\n_Вы платите физическому лицу._\n_Деньги поступят на счёт получателя._",
-            reply_markup=keyboard,
-            parse_mode="Markdown"  # Указываем, что используем Markdown для форматирования
-        )
-        # Всплывающее сообщение (alert) для пользователя
-        await bot.answer_callback_query(
-            callback_query.id,  # Используем ID callback запроса для отправки ответа
-            text="✅ После оплаты нажмите кнопку 'Я ОПЛАТИЛ' и следуйте указаниям.",  # Текст уведомления
-            show_alert=True  # Показывает уведомление как алерт
-        )
+        await pay_menu_after("i_paid_100", "cancel_100", "1050.00")
+    # Отмена оплаты 100    
     if callback_query.data == "cancel_100":
+        await tarif_menu("pay_100", "100", "1700.00", "1050.00") # Возвращаемся в меню выбота тарифа
+    ###
+
+    ### Кнопки "Я ОПЛАТИЛ"
+    async def i_paid(_cancel_btn):
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=emoji.emojize("💳 Оплатить"), callback_data="pay_100")],
-            [InlineKeyboardButton(text=emoji.emojize("⬅️ Назад"), callback_data="back")]
+            [InlineKeyboardButton(text=emoji.emojize("🚫 ОТМЕНА"), callback_data=_cancel_btn)]
         ])
-        # Обновляем текст и клавиатуру без отправки нового сообщения
         await bot.edit_message_text(
             chat_id=chat_id,
             message_id=message_id,
-            text="Тариф: 100 публикаций\nСтоимость: <s>1700.00</s> 1050.00 🇷🇺RUB\nКол-во доступных сообщений: 100 шт",
+            text=f"💁🏻‍♂️ Оплатили?\n\n👌🏻 Тогда `отправьте сюда картинкой (не документом!) квитанцию платежа: скриншот или фото.`\n\nНа квитанции должны быть четко видны: дата, время и сумма платежа.\n__________________________\nЗа спам вы можете быть заблокированы!",
             reply_markup=keyboard,
-            parse_mode="HTML"
+            parse_mode="Markdown"
         )
 
+    if callback_query.data == "i_paid_15":
+        await i_paid("cancel_15")
+    if callback_query.data == "i_paid_50":
+        await i_paid("cancel_50")
+    if callback_query.data == "i_paid_100":
+        await i_paid("cancel_100")
+    ###
 
 # Запуск бота через start_polling()
 async def incoming_messages():
