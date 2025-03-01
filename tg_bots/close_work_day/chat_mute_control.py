@@ -31,7 +31,7 @@ async def chat_mute_control():
         moscow_tz_offset = timedelta(hours=3)
         current_time = datetime.utcnow() + moscow_tz_offset
 
-        close_time = current_time.replace(hour=12, minute=57, second=0, microsecond=0)
+        close_time = current_time.replace(hour=18, minute=00, second=0, microsecond=0)
         open_time = current_time.replace(hour=9, minute=00, second=0, microsecond=0)
 
         if current_time >= close_time:
