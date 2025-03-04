@@ -2,13 +2,13 @@ import asyncio
 from datetime import datetime, timedelta
 from aiogram import Bot
 from aiogram.types import ChatPermissions
-from tg_bots.close_work_day.send_message import send_message_to_group
+from tg_bots.actions.send_message import send_message_to_group
 from globals import GlobalConfig
 
 # Вкл/Выкл возможности отправки сообщений пользователями (в отдельнеом потоке)
 
-TELEGRAM_TOKEN = GlobalConfig.tg_bot_token
-GROUP_ID = GlobalConfig.tg_bot_group_id
+TELEGRAM_TOKEN = GlobalConfig.feedback_tg_bot_token
+GROUP_ID = GlobalConfig.feedback_tg_bot_group_id
 
 close_message = (
     "🔒 Чат закрыт! Можно писать только с 09:00 до 18:00.\n"

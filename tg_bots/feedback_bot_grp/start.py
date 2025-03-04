@@ -3,10 +3,10 @@ from telegram import Bot, Update
 from telegram.error import TelegramError
 import time
 from globals import GlobalConfig
-from tg_bots.close_work_day.send_message import send_message_to_group
+from tg_bots.actions.send_message import send_message_to_group
 
-TELEGRAM_TOKEN = GlobalConfig.tg_bot_token
-GROUP_ID = GlobalConfig.tg_bot_group_id
+TELEGRAM_TOKEN = GlobalConfig.feedback_tg_bot_token
+GROUP_ID = GlobalConfig.feedback_tg_bot_group_id
 
 # Список ключевых слов и ответов
 key_responses = {
@@ -47,5 +47,5 @@ async def incoming_messages():
         except TelegramError as e:
             print(f"Ошибка при получении обновлений: {e}")
 
-async def close_work_day_start_bot():
+async def feedback_bot_grp_start_bot():
     await incoming_messages()

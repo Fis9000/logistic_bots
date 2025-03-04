@@ -4,10 +4,10 @@ from globals import GlobalConfig
 
 # Получение id группы, в которой находится бот
 
-TELEGRAM_TOKEN = GlobalConfig.tg_bot_token
+# TELEGRAM_TOKEN = GlobalConfig.tg_bot_token
 
-async def get_group_id():
-    bot = Bot(token=TELEGRAM_TOKEN)
+async def get_group_id(_tg_token):
+    bot = Bot(token=_tg_token)
 
     try:
         # Очищаем старые обновления

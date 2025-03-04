@@ -1,9 +1,9 @@
 class GlobalConfig:
     # tg bot
-    tg_bot = "logistic_close_work_day"
-    tg_bot_username = "logisticCloseWorkDay_bot"
-    tg_bot_token = "7982254324:AAEimLcN29rZV7-pAxW1x5OVKR2ETwjlKCo"
-    tg_bot_group_id = -1002449070638
+    feedback_tg_bot = "logistic_feedback"
+    feedback_tg_bot_username = "logisticFeedback_bot"
+    feedback_tg_bot_token = "7427764029:AAHAHpc4W9N6KaJcH3yCEqzY1Hf7spXy0HM"
+    feedback_tg_bot_group_id = -1002449070638
 
     # tg bot
     pay_tg_bot = "logistic_pay"
