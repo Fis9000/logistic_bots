@@ -19,7 +19,7 @@ dp = Dispatcher()
 class Form(StatesGroup):
     waiting_for_keyword = State()  # Состояние ожидания ключевого слова
 
-# Функция для отправки reply-кнопок
+# Функция для отправки reply-кнопок в группу
 async def send_reply_buttons(chat_id, _text):
     reply_keyboard = ReplyKeyboardMarkup(
         keyboard=[
@@ -35,23 +35,25 @@ async def on_new_member(message: types.Message):
         user_name = user.first_name # Получаем имя пользователя
         if user.last_name:
             user_name += f" {user.last_name}"
-    await send_reply_buttons(message.chat.id, "Новый пользователь: " + user_name + "")
+    # await send_reply_buttons(message.chat.id, "Новый пользователь: " + user_name + "") # Отправляем reply-кнопки каждому новому пользователю 
+    await send_reply_buttons(GROUP_ID, "Новый пользователь: " + user_name + "") # Отправляем reply-кнопки каждому новому пользователю 
 
 # Обработчик команды /start
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
-    await send_reply_buttons(message.chat.id, "Выберите действие:")
+    # await send_reply_buttons(message.chat.id, "Выберите действие:") # Отправляем reply-кнопки при /start    
+    await send_reply_buttons(GROUP_ID, "Выберите действие:") # Отправляем reply-кнопки при /start    
 
 # Обработчик reply-кнопок
-@dp.message(lambda message: message.text in ["Добавить ключевое слово", "Кнопка B"])
+@dp.message(lambda message: message.text in ["Добавить ключевое слово", "Удалить ключевое слово"])
 async def process_reply_buttons(message: types.Message, state: FSMContext):
-    if message.text == "Добавить ключевое слово":
+    if message.text == "Добавить ключевое слово": # Нажатие на кнопку
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="Прервать", callback_data="cancel_new_word")],
         ])
         await message.reply("Напишите ключевое слово", reply_markup=keyboard)
         await state.set_state(Form.waiting_for_keyword)  # Устанавливаем состояние
-    elif message.text == "Кнопка B":
+    elif message.text == "Удалить ключевое слово": # Нажатие на кнопку
         await message.reply("Вы нажали Кнопку B!")
 
 # Обработчик состояния ожидания ключевого слова
