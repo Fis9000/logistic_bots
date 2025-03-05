@@ -65,6 +65,7 @@ async def process_keyword(message: types.Message, state: FSMContext):
         [InlineKeyboardButton(text="Прервать", callback_data="cancel_new_word")],
     ])
     await message.reply(f"Вы ввели ключевое слово: {keyword}\n\nТеперь введите что будет отвечать бот на это слово", reply_markup=keyboard)
+    print(f"Вы ввели ключевое слово: {keyword}")
     await state.clear()  # Сбрасываем состояние
     
 # Запуск бота через start_polling()
