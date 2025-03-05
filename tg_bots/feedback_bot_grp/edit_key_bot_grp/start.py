@@ -41,9 +41,9 @@ async def on_new_member(message: types.Message):
 # Обработчик команды /start
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
-    await send_reply_buttons(message.chat.id, "Выберите действие:") # Отправляем reply-кнопки при /start    
+    # await send_reply_buttons(message.chat.id, "Выберите действие:") # Отправляем reply-кнопки при /start    
     # await send_reply_buttons(GROUP_ID, "Выберите действие:") # Отправляем reply-кнопки при /start   
-    print(message.chat.id) 
+    await send_reply_buttons(message.chat.id, str(message.chat.id)) # Отправляем reply-кнопки при /start 
 
 # Обработчик reply-кнопок
 @dp.message(lambda message: message.text in ["Добавить ключевое слово", "Удалить ключевое слово"])
@@ -65,7 +65,6 @@ async def process_keyword(message: types.Message, state: FSMContext):
         [InlineKeyboardButton(text="Прервать", callback_data="cancel_new_word")],
     ])
     await message.reply(f"Вы ввели ключевое слово: {keyword}\n\nТеперь введите что будет отвечать бот на это слово", reply_markup=keyboard)
-    print(f"Вы ввели ключевое слово: {keyword}")
     await state.clear()  # Сбрасываем состояние
     
 # Запуск бота через start_polling()
