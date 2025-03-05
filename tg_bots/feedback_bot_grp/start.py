@@ -40,8 +40,8 @@ async def incoming_messages():
                         message_text = user_message.lower()
                         for keyword, response in key_responses.items():
                             if keyword in message_text:
-                                await send_message_to_group(TELEGRAM_TOKEN, GROUP_ID, response)
-
+                                await send_message_to_group(TELEGRAM_TOKEN, update.message.chat_id, response)
+                                # await send_message_to_group(TELEGRAM_TOKEN, GROUP_ID, response)
                     # Обновляем last_update_id для получения только новых сообщений
                     last_update_id = update.update_id + 1
 

@@ -9,8 +9,8 @@ class GlobalConfig:
     edit_feedback_tg_bot = "logistic_edit_feedback_bot"
     edit_feedback_bot_username = "logisticEditFeedback_bot"
     edit_feedback_tg_bot_token = "8082382435:AAGbAfLFcFEYl99jV_0nvhzZFq5YfKK27_0"
-    # edit_feedback_tg_bot_group_id = -1002316643090 # Прод
-    edit_feedback_tg_bot_group_id = -1002316643090 # Локалка
+    edit_feedback_tg_bot_group_id = -1002316643090 # Прод
+    # edit_feedback_tg_bot_group_id = -1002316643090 # Локалка
     # Бот оплаты
 
     pay_tg_bot = "logistic_pay"
