@@ -33,7 +33,7 @@ async def incoming_messages():
 
                     # Логи
                     print(f"{user_name} написал - '{user_message}'")
-
+                    
                     # Проверяем, что сообщение содержит текст
                     if user_message is not None:
                         # Ключевые слова
