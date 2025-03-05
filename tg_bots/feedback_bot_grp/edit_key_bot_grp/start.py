@@ -35,15 +35,14 @@ async def on_new_member(message: types.Message):
         user_name = user.first_name # Получаем имя пользователя
         if user.last_name:
             user_name += f" {user.last_name}"
-    await send_reply_buttons(message.chat.id, "Новый пользователь: " + user_name + "") # Отправляем reply-кнопки каждому новому пользователю 
-    # await send_reply_buttons(GROUP_ID, "Новый пользователь: " + user_name + "") # Отправляем reply-кнопки каждому новому пользователю 
+    # await send_reply_buttons(message.chat.id, "Новый пользователь: " + user_name + "") # Отправляем reply-кнопки каждому новому пользователю 
+    await send_reply_buttons(GROUP_ID, "Новый пользователь: " + user_name + "") # Отправляем reply-кнопки каждому новому пользователю 
 
 # Обработчик команды /start
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     # await send_reply_buttons(message.chat.id, "Выберите действие:") # Отправляем reply-кнопки при /start    
-    # await send_reply_buttons(GROUP_ID, "Выберите действие:") # Отправляем reply-кнопки при /start   
-    await send_reply_buttons(message.chat.id, str(message.chat.id)) # Отправляем reply-кнопки при /start 
+    await send_reply_buttons(GROUP_ID, "Выберите действие:") # Отправляем reply-кнопки при /start   
 
 # Обработчик reply-кнопок
 @dp.message(lambda message: message.text in ["Добавить ключевое слово", "Удалить ключевое слово"])
