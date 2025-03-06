@@ -32,6 +32,10 @@ from tg_bots.feedback_bot_grp.db import create_db
 async def start_create_db():
     asyncio.create_task(create_db())
 
+# Скачать бд
+from sqllite_download import router as sqllite_download_router
+app.include_router(sqllite_download_router, prefix="/download")
+
 # from tg_bots.feedback_bot_grp.db import add_db_info
 # @app.on_event("startup")
 # async def start_add_db_info():
