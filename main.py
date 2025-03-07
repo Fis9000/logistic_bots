@@ -20,11 +20,11 @@ from tg_bots.feedback_bot_grp.chat_mute_control import chat_mute_control
 async def start_chat_mute_control():
     asyncio.create_task(chat_mute_control())
 
-# # Бот редакоирования ключевых слов для бота обратной связи
-# from tg_bots.feedback_bot_grp.edit_key_bot_grp.start import edit_key_bot_grp_start_bot
-# @app.on_event("startup")
-# async def start_main():
-#     asyncio.create_task(edit_key_bot_grp_start_bot())
+# Бот редакоирования ключевых слов для бота обратной связи
+from tg_bots.feedback_bot_grp.edit_key_bot_grp.start import edit_key_bot_grp_start_bot
+@app.on_event("startup")
+async def start_main():
+    asyncio.create_task(edit_key_bot_grp_start_bot())
 
 # Скачать бд
 from sqllite_download import router as sqllite_download_router
