@@ -150,7 +150,7 @@ async def btn_callback(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "all_key_value_btn":
         data = await state.get_data()
         if "keyword" in data:
-            await callback_query.message.answer(f"❗ Процес добавления `{data.get("keyword")}` был прерван!", parse_mode="Markdown")
+            await callback_query.message.answer(f"❗ Процес добавления `{data.get('keyword')}` был прерван!", parse_mode="Markdown")
             await state.clear()
 
         key_responses = await load_key_responses()
@@ -179,7 +179,7 @@ async def btn_callback(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "cancel_new_word_and_value":
         data = await state.get_data()
         if "keyword" in data:
-            await callback_query.message.answer(f"❗ Процес добавления `{data.get("keyword")}` был прерван!", parse_mode="Markdown")
+            await callback_query.message.answer(f"❗ Процес добавления `{data.get('keyword')}` был прерван!", parse_mode="Markdown")
         await state.clear()
 
     if callback_query.data == "cancel_new_word_and_value_null":
