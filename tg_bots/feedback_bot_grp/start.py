@@ -1,5 +1,4 @@
-from datetime import timedelta, timezone
-from telegram import Bot, Update
+from telegram import Bot
 from telegram.error import TelegramError
 import time
 from globals import GlobalConfig

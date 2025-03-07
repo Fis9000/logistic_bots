@@ -1,10 +1,8 @@
-from email import message
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-import asyncio
 from tg_bots.feedback_bot_grp.db import add_db_info, load_key_responses
 from globals import GlobalConfig
 
