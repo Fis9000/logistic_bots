@@ -3,7 +3,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeybo
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from tg_bots.feedback_bot_grp.json_handler import add_db_info, load_key_responses  # Изменено на импорт из json_handler
+from tg_bots.feedback_bot_grp.json_handler import add_json_info, load_key_responses  # Изменено на импорт из json_handler
 from globals import GlobalConfig
 
 # Токен бота
@@ -169,7 +169,7 @@ async def btn_callback(callback_query: types.CallbackQuery, state: FSMContext):
         value = data.get("value")
 
         if keyword != None or value != None:
-            await add_db_info(keyword, value)
+            await add_json_info(keyword, value)
             await callback_query.message.answer(f"✅  Добавлено:\n\n➖  Ключевое слово: {keyword}\n➖  Реакция бота: {value}")
         else:
             await callback_query.message.answer(f"❗ Уже добавлено")

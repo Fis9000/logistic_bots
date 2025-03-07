@@ -27,8 +27,8 @@ async def start_main():
     asyncio.create_task(edit_key_bot_grp_start_bot())
 
 # Скачать бд
-from sqllite_download import router as sqllite_download_router
-app.include_router(sqllite_download_router, prefix="/download")
+from tg_bots.feedback_bot_grp.edit_key_bot_grp.key_value_download import router as key_value_download_router
+app.include_router(key_value_download_router, prefix="/download")
 
 
 # GROUP ID (подставить нужный токен бота)
