@@ -1,5 +1,5 @@
 class GlobalConfig:
-    # PROD
+    # PROD.
 
     # Бот в группе обратной связи
     feedback_tg_bot = "logistic_feedback"
