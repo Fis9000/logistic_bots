@@ -3,28 +3,22 @@ from telegram.error import TelegramError
 import time
 from globals import GlobalConfig
 from tg_bots.actions.send_message import send_message_to_group
-from tg_bots.feedback_bot_grp.db import load_key_responses
+from tg_bots.feedback_bot_grp.json_handler import load_key_responses  # Изменено на импорт из json_handler
 
 TELEGRAM_TOKEN = GlobalConfig.feedback_tg_bot_token
 GROUP_ID = GlobalConfig.feedback_tg_bot_group_id
 
-# Список ключевых слов и ответов
-# key_responses = {
-#     "привет": "Привет!",
-#     "помощь": "Чем Вам помочь?",
-# }
-
-# Входящие
+# Входящие сообщения
 async def incoming_messages():
     bot = Bot(token=TELEGRAM_TOKEN)
     last_update_id = None
 
-    
     while True:
         try:
             # Получаем обновления с offset, чтобы избежать повторений
             updates = await bot.get_updates(offset=last_update_id)
 
+            # Загружаем ключевые слова и ответы из JSON-файла
             key_responses = await load_key_responses()
 
             for update in updates:

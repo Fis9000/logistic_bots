@@ -26,12 +26,6 @@ from tg_bots.feedback_bot_grp.edit_key_bot_grp.start import edit_key_bot_grp_sta
 async def start_main():
     asyncio.create_task(edit_key_bot_grp_start_bot())
 
-# БД
-from tg_bots.feedback_bot_grp.db import create_db
-@app.on_event("startup")
-async def start_create_db():
-    asyncio.create_task(create_db())
-
 # Скачать бд
 from sqllite_download import router as sqllite_download_router
 app.include_router(sqllite_download_router, prefix="/download")

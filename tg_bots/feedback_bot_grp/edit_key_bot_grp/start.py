@@ -3,7 +3,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeybo
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from json_handler import add_db_info, load_key_responses  # Изменено на импорт из json_handler
+from tg_bots.feedback_bot_grp.json_handler import add_db_info, load_key_responses  # Изменено на импорт из json_handler
 from globals import GlobalConfig
 
 # Токен бота
