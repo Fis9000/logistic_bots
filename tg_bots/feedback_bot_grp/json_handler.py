@@ -2,7 +2,7 @@ import json
 import os
 
 # Путь к JSON-файлу
-JSON_FILE_PATH = 'tg_bots/feedback_bot_grp/edit_key_bot_grp/data.json'
+JSON_FILE_PATH = 'tg_bots/feedback_bot_grp/edit_key_bot_grp/key_value.json'
 
 # Функция для загрузки данных из JSON-файла
 async def load_key_responses():
