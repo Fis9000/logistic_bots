@@ -137,17 +137,17 @@ async def btn_callback(callback_query: types.CallbackQuery, state: FSMContext):
     chat_id = callback_query.message.chat.id
     message_id = callback_query.message.message_id
 
-    if callback_query.data == "add_key_value_btn":
+    if callback_query.data == "add_key_value_btn":  # / ГЛАВНОЕ МЕНЮ (после /start)
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="Прервать", callback_data="cancel_new_word_and_value_null")],
         ])
         await callback_query.message.answer("➡️  Напишите ключевое слово", reply_markup=keyboard)
         await state.set_state(Form.waiting_for_keyword)
 
-    if callback_query.data == "del_key_value_btn":
+    if callback_query.data == "del_key_value_btn": # / ГЛАВНОЕ МЕНЮ (после /start)
         await callback_query.message.answer("Вы нажали Кнопку B!")
 
-    if callback_query.data == "all_key_value_btn":
+    if callback_query.data == "all_key_value_btn": # / ГЛАВНОЕ МЕНЮ (после /start)
         data = await state.get_data()
         if "keyword" in data:
             await callback_query.message.answer(f"❗ Процес добавления `{data.get('keyword')}` был прерван!", parse_mode="Markdown")
@@ -163,26 +163,31 @@ async def btn_callback(callback_query: types.CallbackQuery, state: FSMContext):
             await callback_query.message.answer("Список ключевых слов пуст.")
         await state.clear()
 
-    if callback_query.data == "create_new_word_and_value":
+    # Конечное создание и прерывание нового слова
+    if callback_query.data == "create_new_word_and_value": # Кнопка Подтвердить
         data = await state.get_data()
         keyword = data.get("keyword")
         value = data.get("value")
+        user_name = callback_query.from_user.full_name
 
+        # Отправляем сообщение об успешном добавлении
         if keyword != None or value != None:
             await add_json_info(keyword, value)
             await callback_query.message.answer(f"✅  Добавлено:\n\n➖  Ключевое слово: {keyword}\n➖  Реакция бота: {value}")
+            print(user_name)
         else:
             await callback_query.message.answer(f"❗ Уже добавлено")
 
         await state.clear()
 
-    if callback_query.data == "cancel_new_word_and_value":
+     # Прервать
+    if callback_query.data == "cancel_new_word_and_value": # Кнопка Прервать (если в памяти уже есть key или value)
         data = await state.get_data()
         if "keyword" in data:
             await callback_query.message.answer(f"❗ Процес добавления `{data.get('keyword')}` был прерван!", parse_mode="Markdown")
         await state.clear()
 
-    if callback_query.data == "cancel_new_word_and_value_null":
+    if callback_query.data == "cancel_new_word_and_value_null": # Кнопка Прервать (если в памяти ничего нет)
         await callback_query.message.answer(f"❗ Процес добавления был прерван!")
         await state.clear()
 
