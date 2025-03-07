@@ -3,7 +3,7 @@ from telegram.error import TelegramError
 import time
 from globals import GlobalConfig
 from tg_bots.actions.send_message import send_message_to_group
-from tg_bots.feedback_bot_grp.db import load_key_responses
+# from tg_bots.feedback_bot_grp.db import load_key_responses
 
 TELEGRAM_TOKEN = GlobalConfig.feedback_tg_bot_token
 GROUP_ID = GlobalConfig.feedback_tg_bot_group_id
@@ -25,7 +25,7 @@ async def incoming_messages():
             # Получаем обновления с offset, чтобы избежать повторений
             updates = await bot.get_updates(offset=last_update_id)
 
-            key_responses = await load_key_responses()
+            # key_responses = await load_key_responses()
 
             for update in updates:
                 if update.message:
@@ -39,9 +39,9 @@ async def incoming_messages():
                     if user_message is not None:
                         # Ключевые слова
                         message_text = user_message.lower()
-                        for keyword, response in key_responses.items():
-                            if keyword == message_text:
-                                await send_message_to_group(TELEGRAM_TOKEN, update.message.chat_id, response)
+                        # for keyword, response in key_responses.items():
+                        #     if keyword == message_text:
+                        #         await send_message_to_group(TELEGRAM_TOKEN, update.message.chat_id, response)
                                 # await send_message_to_group(TELEGRAM_TOKEN, GROUP_ID, response)
                     # Обновляем last_update_id для получения только новых сообщений
                     last_update_id = update.update_id + 1
