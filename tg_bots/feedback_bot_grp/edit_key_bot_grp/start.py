@@ -1,4 +1,5 @@
-from aiogram import Bot, Dispatcher, types
+from telegram import Bot
+from aiogram import Dispatcher, types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
