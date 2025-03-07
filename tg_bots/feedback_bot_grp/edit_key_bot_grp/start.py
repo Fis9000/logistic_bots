@@ -48,7 +48,7 @@ async def on_new_member(message: types.Message):
 async def cmd_start(message: types.Message, state: FSMContext):
     data = await state.get_data()
     if "keyword" in data:
-        await message.answer(f"❗ Процес добавления `{data.get("keyword")}` был прерван!", parse_mode="Markdown")
+        await message.answer(f"❗ Процес добавления `{data.get('keyword')}` был прерван!", parse_mode="Markdown")
         await state.clear()  # Сбрасываем состояние
 
     menu = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
