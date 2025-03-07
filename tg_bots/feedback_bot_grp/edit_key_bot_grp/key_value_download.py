@@ -7,7 +7,7 @@ app = FastAPI()
 
 @router.get("/download_key_value")
 async def download_db():
-    file_path = "key_value.json"
+    file_path = "tg_bots/feedback_bot_grp/edit_key_bot_grp/key_value.json"
     
     # Проверяем, существует ли файл
     if not os.path.exists(file_path):
