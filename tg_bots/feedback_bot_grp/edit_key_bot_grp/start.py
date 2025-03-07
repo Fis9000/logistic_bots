@@ -3,7 +3,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeybo
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-# from tg_bots.feedback_bot_grp.db import add_db_info, load_key_responses
+from tg_bots.feedback_bot_grp.db import add_db_info, load_key_responses
 from globals import GlobalConfig
 
 # Токен бота
@@ -71,17 +71,17 @@ async def process_reply_buttons(message: types.Message, state: FSMContext):
         await message.answer("➡️  Напишите ключевое слово", reply_markup=keyboard)
         await state.set_state(Form.waiting_for_keyword)  # Устанавливаем состояние для key
 
-    # if message.text == "Удалить ключевое слово":  # Нажатие на кнопку
-    #     key_responses = await load_key_responses()  # Загружаем ключевые слова из базы данных
-    #     if key_responses:
-    #         # Создаем инлайн-кнопки для каждого ключевого слова
-    #         keyboard = InlineKeyboardMarkup(inline_keyboard=[
-    #             [InlineKeyboardButton(text=key, callback_data=f"show_key_{key}")] for key in key_responses.keys()
-    #         ])
-    #         await message.answer("❗*ВНИМАНИЕ - ДЕЙСТВИЕ НЕОБРАТИМО*❗", parse_mode="Markdown")
-    #         await message.answer("Выберите ключевое слово для удаления:", reply_markup=keyboard)
-    #     else:
-    #         await message.answer("Список ключевых слов пуст.")
+    if message.text == "Удалить ключевое слово":  # Нажатие на кнопку
+        key_responses = await load_key_responses()  # Загружаем ключевые слова из базы данных
+        if key_responses:
+            # Создаем инлайн-кнопки для каждого ключевого слова
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text=key, callback_data=f"show_key_{key}")] for key in key_responses.keys()
+            ])
+            await message.answer("❗*ВНИМАНИЕ - ДЕЙСТВИЕ НЕОБРАТИМО*❗", parse_mode="Markdown")
+            await message.answer("Выберите ключевое слово для удаления:", reply_markup=keyboard)
+        else:
+            await message.answer("Список ключевых слов пуст.")
 
     if message.text == "Список ключевых слов":  # Нажатие на кнопку
         # Если эта кнопка нажата во время процесса добавления key-value
@@ -90,14 +90,14 @@ async def process_reply_buttons(message: types.Message, state: FSMContext):
             await message.answer(f"❗ Процесс добавления `{data.get('keyword')}` был прерван!", parse_mode="Markdown")
             await state.clear()  # Сбрасываем состояние
 
-        # key_responses = await load_key_responses()  # Загружаем список ключевых слов и их значений
-        # if key_responses:
-        #     response = "Список ключевых слов и их значений:\n\n"
-        #     for key, value in key_responses.items():
-        #         response += f"❓ `{key}`\n❗ {value}\n➖➖➖➖➖\n"
-        #     await message.answer(response, parse_mode="Markdown")
-        # else:
-        #     await message.answer("Список ключевых слов пуст.")
+        key_responses = await load_key_responses()  # Загружаем список ключевых слов и их значений
+        if key_responses:
+            response = "Список ключевых слов и их значений:\n\n"
+            for key, value in key_responses.items():
+                response += f"❓ `{key}`\n❗ {value}\n➖➖➖➖➖\n"
+            await message.answer(response, parse_mode="Markdown")
+        else:
+            await message.answer("Список ключевых слов пуст.")
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -106,24 +106,24 @@ async def create_key(message: types.Message, state: FSMContext):
     keyword = message.text  # Получаем текст сообщения
     
     # Загружаем текущие ключи из базы данных
-    # key_responses = await load_key_responses()
+    key_responses = await load_key_responses()
     # Проверяем, существует ли ключевое слово в базе данных
-    # if keyword in key_responses:
-    #     # Если ключ уже существует, сообщаем об этом пользователю и просим выбрать другое
-    #     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-    #         [InlineKeyboardButton(text="Прервать", callback_data="cancel_new_word_and_value")],
-    #     ])
-    #     await message.reply(f"❗❗❗ \n\n➖ {keyword}\n\nУже существует в базе данных.\nПопробуйте другое", reply_markup=keyboard)
-    #     await state.clear()  # Сбрасываем состояние
-    #     await state.set_state(Form.waiting_for_keyword)  # Устанавливаем состояние для key
-    # else:
-    #     # Если ключа нет, сохраняем его в состоянии и запрашиваем значение
-    #     await state.update_data(keyword=keyword)  # Сохраняем ключевое слово в состоянии
-    #     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-    #         [InlineKeyboardButton(text="Прервать", callback_data="cancel_new_word_and_value")],
-    #     ])
-    #     await message.reply(f"Вы ввели ключевое слово:\n➖  {keyword}\n\n➡️  Теперь введите, что будет отвечать бот на это слово", reply_markup=keyboard)
-    #     await state.set_state(Form.waiting_for_value)  # Устанавливаем состояние для value
+    if keyword in key_responses:
+        # Если ключ уже существует, сообщаем об этом пользователю и просим выбрать другое
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="Прервать", callback_data="cancel_new_word_and_value")],
+        ])
+        await message.reply(f"❗❗❗ \n\n➖ {keyword}\n\nУже существует в базе данных.\nПопробуйте другое", reply_markup=keyboard)
+        await state.clear()  # Сбрасываем состояние
+        await state.set_state(Form.waiting_for_keyword)  # Устанавливаем состояние для key
+    else:
+        # Если ключа нет, сохраняем его в состоянии и запрашиваем значение
+        await state.update_data(keyword=keyword)  # Сохраняем ключевое слово в состоянии
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="Прервать", callback_data="cancel_new_word_and_value")],
+        ])
+        await message.reply(f"Вы ввели ключевое слово:\n➖  {keyword}\n\n➡️  Теперь введите, что будет отвечать бот на это слово", reply_markup=keyboard)
+        await state.set_state(Form.waiting_for_value)  # Устанавливаем состояние для value
 
 # Обработчик ключевого слова
 @dp.message(Form.waiting_for_keyword)
@@ -183,15 +183,15 @@ async def btn_callback(callback_query: types.CallbackQuery, state: FSMContext):
             await callback_query.message.answer(f"❗ Процес добавления `{data.get("keyword")}` был прерван!", parse_mode="Markdown")
             await state.clear()  # Сбрасываем состояние
 
-        # key_responses = await load_key_responses()  # Загружаем список ключевых слов и их значений
-        # if key_responses:
-        #     response = "Список ключевых слов и их значений:\n\n"
-        #     for key, value in key_responses.items():
-        #         response += f"❓ `{key}`\n❗ {value}\n➖➖➖➖➖\n"
-        #     await callback_query.message.answer(response, parse_mode="Markdown")
-        # else:
-        #     await callback_query.message.answer("Список ключевых слов пуст.")
-        # await state.clear()  # Сбрасываем состояние
+        key_responses = await load_key_responses()  # Загружаем список ключевых слов и их значений
+        if key_responses:
+            response = "Список ключевых слов и их значений:\n\n"
+            for key, value in key_responses.items():
+                response += f"❓ `{key}`\n❗ {value}\n➖➖➖➖➖\n"
+            await callback_query.message.answer(response, parse_mode="Markdown")
+        else:
+            await callback_query.message.answer("Список ключевых слов пуст.")
+        await state.clear()  # Сбрасываем состояние
     #-------------------------------------------------------------------------
 
     # Конечное создание и прерывание нового слова
@@ -203,7 +203,7 @@ async def btn_callback(callback_query: types.CallbackQuery, state: FSMContext):
 
         if keyword != None or value != None:
             # Добавляем данные в базу данных
-            # await add_db_info(keyword, value)
+            await add_db_info(keyword, value)
 
             # Отправляем сообщение об успешном добавлении
             await callback_query.message.answer(f"✅  Добавлено:\n\n➖  Ключевое слово: {keyword}\n➖  Реакция бота: {value}")

@@ -27,10 +27,10 @@ async def start_main():
     asyncio.create_task(edit_key_bot_grp_start_bot())
 
 # БД
-# from tg_bots.feedback_bot_grp.db import create_db
-# @app.on_event("startup")
-# async def start_create_db():
-#     asyncio.create_task(create_db())
+from tg_bots.feedback_bot_grp.db import create_db
+@app.on_event("startup")
+async def start_create_db():
+    asyncio.create_task(create_db())
 
 # Скачать бд
 from sqllite_download import router as sqllite_download_router
@@ -40,8 +40,6 @@ app.include_router(sqllite_download_router, prefix="/download")
 # @app.on_event("startup")
 # async def start_add_db_info():
 #     asyncio.create_task(add_db_info())
-
-# 
 
 # GROUP ID (подставить нужный токен бота)
 # from tg_bots.feedback_bot_grp.get_group_id import get_group_id
