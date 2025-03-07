@@ -41,6 +41,8 @@ app.include_router(sqllite_download_router, prefix="/download")
 # async def start_add_db_info():
 #     asyncio.create_task(add_db_info())
 
+# 
+
 # GROUP ID (подставить нужный токен бота)
 # from tg_bots.feedback_bot_grp.get_group_id import get_group_id
 # @app.on_event("startup")
