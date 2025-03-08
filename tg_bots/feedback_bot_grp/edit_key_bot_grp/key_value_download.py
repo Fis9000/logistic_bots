@@ -5,6 +5,7 @@ import os
 import zipfile
 from io import BytesIO
 
+# Перед деплоем заменить файлы в проекте
 download_url = "https://fis9000-logistic-bots-0cd5.twc1.net/download/download_key_value"
 
 router = APIRouter()
