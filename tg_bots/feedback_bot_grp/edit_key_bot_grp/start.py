@@ -1,9 +1,10 @@
+from datetime import datetime, timedelta, timezone
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from tg_bots.feedback_bot_grp.json_handler import add_json_info, load_key_responses
+from tg_bots.feedback_bot_grp.json_handler import add_json_info, load_key_responses, remove_json_info
 from globals import GlobalConfig
 
 # Токен бота
@@ -71,8 +72,8 @@ async def process_reply_buttons(message: types.Message, state: FSMContext):
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text=key, callback_data=f"show_key_{key}")] for key in key_responses.keys()
             ])
-            await message.answer("❗*ВНИМАНИЕ - ДЕЙСТВИЕ НЕОБРАТИМО*❗", parse_mode="Markdown")
-            await message.answer("Выберите ключевое слово для удаления:", reply_markup=keyboard)
+            # await message.answer("❗*ВНИМАНИЕ - ДЕЙСТВИЕ НЕОБРАТИМО*❗", parse_mode="Markdown")
+            await message.answer("❗*ВНИМАНИЕ - ДЕЙСТВИЕ НЕОБРАТИМО*❗\nВыберите ключевое слово для удаления:", reply_markup=keyboard, parse_mode="Markdown")
         else:
             await message.answer("Список ключевых слов пуст.")
 
@@ -145,8 +146,16 @@ async def btn_callback(callback_query: types.CallbackQuery, state: FSMContext):
         await state.set_state(Form.waiting_for_keyword)
 
     if callback_query.data == "del_key_value_btn": # / ГЛАВНОЕ МЕНЮ (после /start)
-        await callback_query.message.answer("Вы нажали Кнопку B!")
-
+        key_responses = await load_key_responses()
+        if key_responses:
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text=key, callback_data=f"show_key_{key}")] for key in key_responses.keys()
+            ])
+            # await callback_query.message.answer("❗*ВНИМАНИЕ - ДЕЙСТВИЕ НЕОБРАТИМО*❗", parse_mode="Markdown")
+            await callback_query.message.answer("❗*ВНИМАНИЕ - ДЕЙСТВИЕ НЕОБРАТИМО*❗\nВыберите ключевое слово для удаления:", reply_markup=keyboard, parse_mode="Markdown")
+        else:
+            await callback_query.message.answer("Список ключевых слов пуст.")
+        
     if callback_query.data == "all_key_value_btn": # / ГЛАВНОЕ МЕНЮ (после /start)
         data = await state.get_data()
         if "keyword" in data:
@@ -163,6 +172,42 @@ async def btn_callback(callback_query: types.CallbackQuery, state: FSMContext):
             await callback_query.message.answer("Список ключевых слов пуст.")
         await state.clear()
 
+    # Конечное удаление ключевого слова
+    if callback_query.data.startswith("show_key_"):  # Обработка нажатия на конкретное слово
+        user_name = callback_query.from_user.full_name
+        key = callback_query.data.replace("show_key_", "")  # Извлекаем ключ из callback_data
+        
+        # Удаляем ключ из JSON-файла
+        success = await remove_json_info(key)  # Вызываем функцию удаления
+        if success:
+            key_responses = await load_key_responses()  # Загружаем обновленные данные
+            if key_responses:
+                keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                    [InlineKeyboardButton(text=key, callback_data=f"show_key_{key}")] for key in key_responses.keys()
+                ])
+            else:
+                keyboard = None  # Если ключей больше нет, клавиатура не нужна
+
+            await bot.edit_message_text(
+                chat_id=chat_id,
+                message_id=message_id,
+                text=f"❗*ВНИМАНИЕ - ДЕЙСТВИЕ НЕОБРАТИМО*❗\nВыберите ключевое слово для удаления:\n\n🚫 Ключевое слово `{key}` удалено",
+                reply_markup=keyboard,
+                parse_mode="Markdown"
+            )
+            
+            # Логи
+            moscow_tz = timezone(timedelta(hours=3))
+            date_time = datetime.now(moscow_tz).strftime("%d-%m-%Y %H:%M:%S")
+            await logs(f"{date_time} | Удалено: Ключевое слово: {key} | Пользователем: {user_name}")
+        else:
+            await bot.edit_message_text(
+                chat_id=chat_id,
+                message_id=message_id,
+                text=f"❌ Ошибка: Ключевое слово `{key}` не найдено.",
+                parse_mode="Markdown"
+            )
+
     # Конечное создание и прерывание нового слова
     if callback_query.data == "create_new_word_and_value": # Кнопка Подтвердить
         data = await state.get_data()
@@ -171,13 +216,14 @@ async def btn_callback(callback_query: types.CallbackQuery, state: FSMContext):
         user_name = callback_query.from_user.full_name
 
         # Отправляем сообщение об успешном добавлении
-        if keyword != None or value != None:
+        if keyword is not None or value is not None:
             await add_json_info(keyword, value)
             await callback_query.message.answer(f"✅  Добавлено:\n\n➖  Ключевое слово: {keyword}\n➖  Реакция бота: {value}")
-            print(user_name)
-        else:
-            await callback_query.message.answer(f"❗ Уже добавлено")
-
+            
+            # Логи
+            moscow_tz = timezone(timedelta(hours=3))
+            date_time = datetime.now(moscow_tz).strftime("%d-%m-%Y %H:%M:%S")
+            await logs(f"{date_time} | Добавлено: Ключевое слово: {keyword} | Реакция бота: {value} | Пользователем: {user_name}")
         await state.clear()
 
      # Прервать
@@ -190,6 +236,15 @@ async def btn_callback(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "cancel_new_word_and_value_null": # Кнопка Прервать (если в памяти ничего нет)
         await callback_query.message.answer(f"❗ Процес добавления был прерван!")
         await state.clear()
+
+# Логи
+async def logs(_log_message):    
+    log_message = _log_message       
+    print(log_message)        
+    # Запись в файл logs.txt
+    with open("tg_bots/feedback_bot_grp/edit_key_bot_grp/logs.txt", "a", encoding="utf-8") as log_file:
+        log_file.write(log_message + "\n")
+
 
 # Запуск бота через start_polling()
 async def start():
