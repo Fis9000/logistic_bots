@@ -14,9 +14,9 @@ class GlobalConfig:
     edit_feedback_tg_bot_group_id = -1002316643090 
 
     # Бот оплаты
-    pay_tg_bot = "logistic_pay"
-    pay_bot_username = "logisticPay_bot"
-    pay_tg_bot_token = "7615215575:AAFfp8xoJBhtVfmXJPi_5dnMJGrB6QrCFw4"
+    pay_tg_bot = "GPMPay"
+    pay_bot_username = "GPMPayBot"
+    pay_tg_bot_token = "7652835642:AAG3deULkNk5WCP4xkqtniwf57-y9djl1Kg"
 
     ###
 
