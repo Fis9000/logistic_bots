@@ -1,3 +1,4 @@
+import unicodedata
 from telegram import Bot
 from telegram.error import TelegramError
 import time
@@ -45,9 +46,15 @@ async def incoming_messages():
                     if user_message is not None:
                         # Ключевые слова
                         message_text = user_message.lower()
+                        def normalize_text(text):
+                            return unicodedata.normalize("NFKC", text.strip().lower())
+
                         for keyword, response in key_responses.items():
-                            if keyword == message_text:
+                            if normalize_text(keyword) == message_text:
+                                print("OK")
                                 await send_message_to_group(TELEGRAM_TOKEN, update.message.chat_id, response)
+                            else:
+                                print("NOT OK")
                     # Обновляем last_update_id для получения только новых сообщений
                     last_update_id = update.update_id + 1
 
