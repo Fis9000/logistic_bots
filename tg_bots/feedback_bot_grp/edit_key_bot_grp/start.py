@@ -48,7 +48,7 @@ async def on_new_member(message: types.Message):
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message, state: FSMContext):
     data = await state.get_data()
-    if "keyword" in data:
+    if "keyword" in data: # После старта всегда сбрасываем состояние
         await message.answer(f"❗ Процес добавления `{data.get('keyword')}` был прерван!", parse_mode="Markdown")
         await state.clear()  # Сбрасываем состояние
 
