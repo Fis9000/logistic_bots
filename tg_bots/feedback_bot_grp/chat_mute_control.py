@@ -10,9 +10,12 @@ from globals import GlobalConfig
 TELEGRAM_TOKEN = GlobalConfig.feedback_tg_bot_token
 GROUP_ID = GlobalConfig.feedback_tg_bot_group_id
 
+CLOSE_IMAGE_PATH = "tg_bots/feedback_bot_grp/img1.jpg"
+
 close_message = (
-    "🔒 Чат закрыт! Можно писать только с 09:00 до 18:00.\n"
-    "Для подачи запросов используйте специальный раздел: [Ссылка на раздел]"
+    "Коллеги, добрый вечер! С 18:00 до 09:00 по Московскому времени закрыта возможность отправлять сообщения в эту группу.\n\nЕсли у вас остались вопросы, которые вы бы хотели задать - вам нужно перейти в бот, где вы берете заказы (у кого этого бота нет - переходим в бот регистрации и проходим ее, @Gpm_registration_bot)\n"
+    "Внутри бота вы вызываете меню, далее нажимаете на 'мои данные', после - кнопка 'Написать вопрос\пожелание\предложение'.\nВводите свой вопрос и отправляете.\n\n" 
+    "Всем хорошего вечера!"
 )
 open_message = "✅ Чат открыт!"
 
@@ -31,8 +34,8 @@ async def chat_mute_control():
         moscow_tz_offset = timedelta(hours=3)
         current_time = datetime.utcnow() + moscow_tz_offset
 
-        close_time = current_time.replace(hour=18, minute=00, second=0, microsecond=0)
-        open_time = current_time.replace(hour=9, minute=00, second=0, microsecond=0)
+        close_time = current_time.replace(hour=13, minute=11, second=0, microsecond=0)
+        open_time = current_time.replace(hour=9, minute=0, second=0, microsecond=0)
 
         if current_time >= close_time:
             close_time += timedelta(days=1)
@@ -50,7 +53,7 @@ async def chat_mute_control():
         await asyncio.sleep(time_to_sleep)
 
         if action == "close":
-            await send_message_to_group(TELEGRAM_TOKEN, GROUP_ID, close_message)
+            await send_message_to_group(TELEGRAM_TOKEN, GROUP_ID, close_message, CLOSE_IMAGE_PATH)
             await close_chat()
         else:
             await send_message_to_group(TELEGRAM_TOKEN, GROUP_ID, open_message)
